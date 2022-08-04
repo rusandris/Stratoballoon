@@ -41,10 +41,19 @@ def filter_to_region(data,lat_lims,lon_lims,levels,reso=0.4, lat_min = -90,lat_m
 
 #linear interpolation on 3D grid
 def interpol_linear(data, lat, lon, z, levels, lats, lons):
+
+    if (lat < min(lats) or lat > max(lats)) or (lon < min(lons) or lon > max(lons)):
+        return (None,None)
     
     u_grid_values = array([list(data.values())[i][0] for i in range(len(levels))])
     v_grid_values = array([list(data.values())[i][1] for i in range(len(levels))])
-
+    
+    if z < min(levels):
+        z = levels[-1]
+    elif z > max(levels):
+        z = levels[0]
+        
+    
     u = interpn((levels[::-1],lats,lons),u_grid_values,[z,lat,lon])[0]
     v = interpn((levels[::-1],lats,lons),v_grid_values,[z,lat,lon])[0]
 
